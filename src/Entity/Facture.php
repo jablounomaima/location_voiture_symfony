@@ -20,6 +20,9 @@ class Facture
     #[ORM\Column]
     private ?float $montantTotale = null;
 
+    #[ORM\OneToOne(mappedBy: 'facture', cascade: ['persist', 'remove'])]
+    private ?Reservation $reservation = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +55,23 @@ class Facture
     public function setMontantTotale(float $montantTotale): static
     {
         $this->montantTotale = $montantTotale;
+
+        return $this;
+    }
+
+    public function getReservation(): ?Reservation
+    {
+        return $this->reservation;
+    }
+
+    public function setReservation(Reservation $reservation): static
+    {
+        // set the owning side of the relation if necessary
+        if ($reservation->getFacture() !== $this) {
+            $reservation->setFacture($this);
+        }
+
+        $this->reservation = $reservation;
 
         return $this;
     }
